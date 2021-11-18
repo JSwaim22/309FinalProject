@@ -1,7 +1,9 @@
 Possible Objects to make
   Player
-  Pieces
+  ConsolePlayer
+  
   Board
+    Pieces
   
 Possible Functions to make
   Check win conditon
