@@ -86,19 +86,26 @@ int main() {
     bool stop = false;
     int input;
     bool player = p1;
+
     
     while(stop == false) {
         cin >> input;
-        if(player == p1) {
-            if(check_win(input, red)) {
-                cout << "p1 wins!";
-            }
+        if(input < 0 || input > 41) {
+            stop = true;
         } else {
-            if(check_win(input, yellow)) {
-                cout << "p2 wins!";
-            }   
+            if(player == p1) {
+                if(check_win(input, red)) {
+                    cout << "p1 wins!" << endl;
+                    break;
+                }
+            } else {
+                if(check_win(input, yellow)) {
+                    cout << "p2 wins!" << endl;
+                    break;
+                }   
+            }
+            player = !player;
         }
-        player = !player;
     }
 
     return 0;
