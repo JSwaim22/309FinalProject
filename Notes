@@ -1,9 +1,3 @@
-Possible Objects to make
-  Player
-  ConsolePlayer
-  
-  Board
-    Pieces
-  
-Possible Functions to make
-  Check win conditon
+To do:
+  change random for two computers playing
+  fix trying to play in full collumn
