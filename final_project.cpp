@@ -10,7 +10,6 @@
 
 using namespace std;
 
-// zac v
 
 class Player{
 private:
@@ -54,7 +53,6 @@ public:
     }
 
     virtual int pickslot(){
-        srand(time(0));
 
         cout << "Pick a slot to drop your piece (1-7)" << endl;
 
@@ -70,7 +68,6 @@ public:
     }
 };
 
-// matt v
 
 void printboard(array<char,43> board) {
 
@@ -88,7 +85,7 @@ void printboard(array<char,43> board) {
     return;
 }
 
-int dropdisc(int slot, array<int,7>& slotcount) {
+int dropdisc(int slot, array<int, 7>& slotcount) {
 
     int boardloc=42;
 
@@ -98,7 +95,6 @@ int dropdisc(int slot, array<int,7>& slotcount) {
     return boardloc;
 }
 
-// josh v
 
 class four_in_a_row {
     public:
@@ -122,25 +118,29 @@ class discs {
         }
 };
 
-int keys [69] = {   // Horizontal Group Keys
-                    210, 1155, 5005, 17017, 392863, 765049, 1363783, 2022161, 8965109, 12780049, 
-                    17120443, 21182921, 56606581, 72370439, 89809099, 107972737, 204917929, 
-                    257557397, 316818391, 371700317, 645328247, 739349581, 842952707, 936039509,
-                    // Vertical Group Keys
-                    141094, 7689623, 61112267, 303531, 11433001, 78042659, 761395, 19339433, 
-                    108700951, 1283989, 24028937, 129446209, 2754169, 34301923, 160384667, 
-                    3897829, 41676787, 181954753, 5709841, 50045077, 210654859,
-                    // Diagonal Group Keys
-                    82736309, 11740613, 106901371, 263258, 18033173, 140345129, 536007, 24834991, 
-                    155004599, 1069655, 31875719, 1967623, 849961, 16546963, 1669877, 92635027, 
-                    22698649, 2611349, 129583561, 33840293, 4529803, 153122363, 40394243, 172027201  };
+int keys [69] = {   
+    // Horizontal Group Keys
+    210, 1155, 5005, 17017, 392863, 765049, 1363783, 2022161, 8965109, 12780049, 
+    17120443, 21182921, 56606581, 72370439, 89809099, 107972737, 204917929, 
+    257557397, 316818391, 371700317, 645328247, 739349581, 842952707, 936039509,
+    // Vertical Group Keys
+    141094, 7689623, 61112267, 303531, 11433001, 78042659, 761395, 19339433, 
+    108700951, 1283989, 24028937, 129446209, 2754169, 34301923, 160384667, 
+    3897829, 41676787, 181954753, 5709841, 50045077, 210654859,
+    // Diagonal Group Keys
+    82736309, 11740613, 106901371, 263258, 18033173, 140345129, 536007, 24834991, 
+    155004599, 1069655, 31875719, 1967623, 849961, 16546963, 1669877, 92635027, 
+    22698649, 2611349, 129583561, 33840293, 4529803, 153122363, 40394243, 172027201  
+};
 
-int locs [42] = {   2,      3,      5,      7,      11,     13,     17, 
-                    19,     23,     29,     31,     37,     41,     43,
-                    47,     53,     59,     61,     67,     71,     73,
-                    79,     83,     89,     97,     101,    103,    107,
-                    109,    113,    127,    131,    137,    139,    149,
-                    151,    157,    163,    167,    173,    179,    181     };
+int locs [42] = {   
+    2,      3,      5,      7,      11,     13,     17, 
+    19,     23,     29,     31,     37,     41,     43,
+    47,     53,     59,     61,     67,     71,     73,
+    79,     83,     89,     97,     101,    103,    107,
+    109,    113,    127,    131,    137,    139,    149,
+    151,    157,    163,    167,    173,    179,    181     
+};
 
 list<four_in_a_row> groups;
 
@@ -171,6 +171,7 @@ bool check_win(int index, int color) {
 
 int main()
 {
+    srand(time(0));
     // set groups
     for(int i = 0; i < 69; i++) {
         groups.push_back(four_in_a_row(keys[i], none, empty));
@@ -185,15 +186,13 @@ int main()
     int gm;
     cin >> gm;
 
-    while(gm < 1 || gm > 3){                        // make sure 1-3
+    while(gm < 1 || gm > 3){                  // make sure 1-3
         cout << "Please Enter 1, 2, or 3" << endl;
         cin >> gm;
     }
 
-    
     Player* p1;
     Player* p2;
-    
     
     if(gm == 1){                    // Player vs Player
         
@@ -224,29 +223,8 @@ int main()
         p2 = &player2;
 
     }
-    
-    /*  test functions
-    cout << "Player 1" << endl
-        << "Player Number: \n" << p1->playernumber() << endl
-        << "Slot Number: \n" << p1->pickslot() << endl;
-    
-    
-    cout << "Player 2" << endl
-        << "Player Number: \n" << p2->playernumber() << endl
-        << "Slot Number: \n" << p2->pickslot() << endl;
 
-    */
-    
-    /*   use functions
-        pX->pickslot() prompts player to pick slot or randomizes
-        pX->playernumber() returns 1 or 2 for player number
-    */
-
-    // from matt's
-    char line = '|';
-    int boardloc = 42;
-
-    array<char,43> board; 
+    array<char,43> board;           // initialize board to be empty
     board.fill('_');
 
     array<int,7> slotcount; 
@@ -255,19 +233,17 @@ int main()
     vector<int> xpos;
     vector<int> opos;
 
-    printboard(board);
+    printboard(board);              // print empty board
 
     
     int winner = 0;
 
-    while(1){
+    while(1){                       // start game loop
         
         cout << "Player One: ";
         int slot = p1->pickslot();
 
-        boardloc = dropdisc(slot,slotcount);
-
-        cout << boardloc << endl;           // check boardloc DELETE
+        int boardloc = dropdisc(slot,slotcount);
 
         // update player 1
         xpos.push_back(boardloc);
