@@ -17,12 +17,12 @@ private:
     int position;           // must be 1-7
     
 public:
-    Player(int num = 0, int pos = 0){
+    Player(int num = 0, int pos = 0){   // constructor
         playernum = num;
         position = pos;
     }
 
-    virtual int pickslot(){
+    virtual int pickslot(){             // chosen by user
         cout << "Pick a slot to drop your piece (1-7)" << endl;
 
         cin >> position;
@@ -39,7 +39,7 @@ public:
         return playernum;
     }
 
-};
+};  
 
 class ConsolePlayer : public Player{
 private:
@@ -52,7 +52,7 @@ public:
         position = pos;
     }
 
-    virtual int pickslot(){
+    virtual int pickslot(){             // chosen at random
 
         cout << "Pick a slot to drop your piece (1-7)" << endl;
 
@@ -68,57 +68,68 @@ public:
     }
 };
 
+class Board{
+public:
 
-void printboard(array<char,43> board) {
+    array<char,43> locations;      // 1D array that represents 2D board     
+    array<int,7> slotcount;
 
-    cout << " 1 2 3 4 5 6 7" << endl;
-    for (int k=35; k>=0; k-=7){
+    Board(){                    // initialize board to be empty
+        locations.fill('_');
+        slotcount.fill(0);
+    }
 
-        cout << "|";
-        for (int i=1; i<=7; i++){ 
-            cout << board[i+k] << "|";
+    void printboard() {
+
+        cout << " 1 2 3 4 5 6 7" << endl;
+        for (int k=35; k>=0; k-=7){        
+
+            cout << "|";
+            for (int i=1; i<=7; i++){ 
+                cout << locations[i+k] << "|";
+            }
+            cout << endl;
         }
-        cout<<k/7<<endl;
 
+        return;
     }
 
-    return;
-}
+    int dropdisc(int slot, Player *px) {
 
-int dropdisc(int slot, array<int, 7>& slotcount, Player *px) {
-
-    int boardloc=42;
-
-    while(slotcount[slot-1]>5){
-        cout << "Please choose a different column" << endl;
-        slot = px->pickslot();
-    }
-
-    boardloc=slotcount[slot-1]*7 +slot;
-    slotcount[slot-1]++;
-
-    return boardloc;
-}
-
-bool board_full(array<int, 7>& slotcount){
-    for( int i=0; i<7; i++ ){
-        if(slotcount[i] < 6){
-            return false;
+        while(slotcount[slot-1]>5){         // make sure column isnt full
+            cout << "Please choose a different column" << endl;
+            slot = px->pickslot();
         }
+
+        int boardloc=slotcount[slot-1]*7 +slot;
+        slotcount[slot-1]++;
+
+        return boardloc;            // returns location of piece on 1D array
     }
-    return true;
-}
+
+    bool board_full(){
+
+        for( int i=0; i<7; i++ ){
+            if(slotcount[i] < 6){       // check if each column is full
+                return false;
+            }
+        }
+        // if statement not accessed, all columns must be full
+        return true;
+    }
+};
 
 class four_in_a_row {
-    public:
-        int color;
-        int key;
-        int filled;
-        four_in_a_row(int k, int c, int f){
-            key = k;
-            color = c;
-            filled = f;
-        }
+public:
+    int color;
+    int key;
+    int filled;
+
+    four_in_a_row(int k, int c, int f){
+        key = k;
+        color = c;
+        filled = f;
+    }
 };
 
 class discs {
@@ -130,6 +141,11 @@ class discs {
             color = c;
         }
 };
+
+ostream & operator << (ostream &out, Board board){   // overload cout
+    board.printboard();
+    return out;
+}
 
 int keys [69] = {   
     // Horizontal Group Keys
@@ -162,15 +178,19 @@ bool check_win(int index, int color) {
 
     bool win = false;
 
+    // iterate thru groups list
     for(list<four_in_a_row>::iterator it = groups.begin(); it != groups.end(); it++) {
         if(it->key % new_disc->location == 0) {
+
             if(it->color == none || it->color == new_disc->color) {
                 it->color = new_disc->color;
                 it->filled++;
+
                 if(it->filled == 4) {
                     win = true;
                 }
-            } else {
+            } 
+            else {
                 it = groups.erase(it);
                 it--;
             }
@@ -237,79 +257,59 @@ int main()
 
     }
 
-    array<char,43> board;           // initialize board to be empty
-    board.fill('_');
-
-    array<int,7> slotcount; 
-    slotcount.fill(0);
-
-        // maybe delete?
-    vector<int> xpos;
-    vector<int> opos;
-
-    printboard(board);              // print empty board
-
+    Board board; 
+    cout << board;                  // print empty board
     
     int winner = 0;
 
     while(1){                       // start game loop
         
         cout << "Player One: ";
-        int slot = p1->pickslot();
+        int slot = p1->pickslot();          // player chooses slot
 
-        int boardloc = dropdisc(slot, slotcount, p1);
-
-        // update player 1
-        xpos.push_back(boardloc);
-        board[boardloc]='x';
+        int boardloc = board.dropdisc(slot, p1);    // update board
+        board.locations[boardloc]='x';
         
-        if( check_win( boardloc-1, p1->playernumber() ) ){
-            winner = p1->playernumber();
+        if( check_win( boardloc-1, p1->playernumber() ) ){  // win?
+            winner = p1->playernumber(); 
             break;
         }
 
-        if(board_full(slotcount)){
+        if(board.board_full()){         // check if board is full
             winner = 3;
             break;
         }
 
-        printboard(board);
+        cout << board;
         
-        cout << "Player Two: ";
+        cout << "Player Two: ";         // repeat above for p2
         slot = p2->pickslot();
 
-        boardloc = dropdisc(slot, slotcount, p2);
-
-        // update player 2
-        opos.push_back(boardloc);
-        board[boardloc]='o';
+        boardloc = board.dropdisc(slot, p2);
+        board.locations[boardloc]='o';
         
         if( check_win( boardloc-1, p2->playernumber() ) ){
             winner = p2->playernumber();
             break;
         }
 
-        if(board_full(slotcount)){
+        if(board.board_full()){
             winner = 3;
             break;
         }
 
-        printboard(board);
-        
+        cout << board;
     }
 
-    if (winner == 3){
-        printboard(board);
+    if (winner == 3){           // only accessed if tie game
+        cout << board;
         cout << "Tie Game!" << endl;
         return 0;
     }
         
-
-    // we're in the end game now
+    // game is over, print winner and board
     cout << "Congratulations Player " << winner
-        << ", You Win!" << endl;
-
-    printboard(board);
+        << ", You Win!" << endl << board << endl;
 
     return 0;
 }
