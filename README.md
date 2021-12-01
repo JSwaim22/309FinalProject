@@ -5,4 +5,4 @@ To compile the code, download the repository and then open the connect_four.cpp 
 
 A cool feature is watching the computers play each other.
 
-There are no none bugs in the software.
+There are no known bugs in the software.
