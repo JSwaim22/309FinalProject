@@ -85,9 +85,14 @@ void printboard(array<char,43> board) {
     return;
 }
 
-int dropdisc(int slot, array<int, 7>& slotcount) {
+int dropdisc(int slot, array<int, 7>& slotcount, Player *px) {
 
     int boardloc=42;
+
+    while(slotcount[slot-1]>5){
+        cout << "Please choose a different column" << endl;
+        slot = px->pickslot();
+    }
 
     boardloc=slotcount[slot-1]*7 +slot;
     slotcount[slot-1]++;
@@ -95,6 +100,14 @@ int dropdisc(int slot, array<int, 7>& slotcount) {
     return boardloc;
 }
 
+bool board_full(array<int, 7>& slotcount){
+    for( int i=0; i<7; i++ ){
+        if(slotcount[i] < 6){
+            return false;
+        }
+    }
+    return true;
+}
 
 class four_in_a_row {
     public:
@@ -230,6 +243,7 @@ int main()
     array<int,7> slotcount; 
     slotcount.fill(0);
 
+        // maybe delete?
     vector<int> xpos;
     vector<int> opos;
 
@@ -243,7 +257,7 @@ int main()
         cout << "Player One: ";
         int slot = p1->pickslot();
 
-        int boardloc = dropdisc(slot,slotcount);
+        int boardloc = dropdisc(slot, slotcount, p1);
 
         // update player 1
         xpos.push_back(boardloc);
@@ -254,13 +268,17 @@ int main()
             break;
         }
 
+        if(board_full(slotcount)){
+            winner = 3;
+            break;
+        }
 
         printboard(board);
         
         cout << "Player Two: ";
         slot = p2->pickslot();
 
-        boardloc = dropdisc(slot,slotcount);
+        boardloc = dropdisc(slot, slotcount, p2);
 
         // update player 2
         opos.push_back(boardloc);
@@ -271,9 +289,21 @@ int main()
             break;
         }
 
+        if(board_full(slotcount)){
+            winner = 3;
+            break;
+        }
+
         printboard(board);
         
     }
+
+    if (winner == 3){
+        printboard(board);
+        cout << "Tie Game!" << endl;
+        return 0;
+    }
+        
 
     // we're in the end game now
     cout << "Congratulations Player " << winner
