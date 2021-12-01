@@ -1,3 +1,4 @@
+// Libraries
 #include <iostream>
 #include <array>
 #include <vector>
@@ -119,19 +120,22 @@ public:
     }
 };
 
+// Class for the groups of four spots in a row
+// Used to check win condition
 class four_in_a_row {
-public:
-    int color;
-    int key;
-    int filled;
+    public:
+        int color;
+        int key;
+        int filled;
 
-    four_in_a_row(int k, int c, int f){
-        key = k;
-        color = c;
-        filled = f;
-    }
+        four_in_a_row(int k, int c, int f){
+            key = k;
+            color = c;
+            filled = f;
+        }
 };
 
+// Class for the individual pieces to be added to the four_in_a_row groups
 class discs {
     public:
         int location;
@@ -147,6 +151,7 @@ ostream & operator << (ostream &out, Board board){   // overload cout
     return out;
 }
 
+// Key values for the four_in_a_row groups
 int keys [69] = {   
     // Horizontal Group Keys
     210, 1155, 5005, 17017, 392863, 765049, 1363783, 2022161, 8965109, 12780049, 
@@ -162,6 +167,7 @@ int keys [69] = {
     22698649, 2611349, 129583561, 33840293, 4529803, 153122363, 40394243, 172027201  
 };
 
+// Location values for all of the different spots on the board
 int locs [42] = {   
     2,      3,      5,      7,      11,     13,     17, 
     19,     23,     29,     31,     37,     41,     43,
@@ -171,32 +177,38 @@ int locs [42] = {
     151,    157,    163,    167,    173,    179,    181     
 };
 
+// Initializing a list of four_in_a_row objects
 list<four_in_a_row> groups;
 
+// Function for checking if a win condition has been met
+// Utilizes discs and four_in_a_row objects
 bool check_win(int index, int color) {
-    discs *new_disc = new discs(locs[index], color);
+    // Makes a new disc object with the right location and color
+    discs *new_disc = new discs(locs[index], color);    
 
     bool win = false;
 
-    // iterate thru groups list
+    // Iterate through groups list
     for(list<four_in_a_row>::iterator it = groups.begin(); it != groups.end(); it++) {
-        if(it->key % new_disc->location == 0) {
+        if(it->key % new_disc->location == 0) {     // if disc location is a part of group
 
             if(it->color == none || it->color == new_disc->color) {
+                // adding disc to group
                 it->color = new_disc->color;
                 it->filled++;
 
-                if(it->filled == 4) {
+                if(it->filled == 4) {   // if group is filled up
                     win = true;
                 }
             } 
             else {
+                // getting rid of group with both colors in it
                 it = groups.erase(it);
                 it--;
             }
         }
     }
-
+    
     delete new_disc;
     return win;
 }
